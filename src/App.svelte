@@ -26,9 +26,15 @@
 		activeItem = 'Current Polls';
 	}
 
-
+	// Adding Tween motion
+	// import {tweened} from 'svelte/motion';
+	// const value = tweened(0)
 
 </script>
+
+
+<!-- <button on:click={() => value.set(1)} > {$value} </button> -->
+
 
 
 <Header />
