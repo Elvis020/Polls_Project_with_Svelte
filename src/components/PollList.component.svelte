@@ -1,13 +1,34 @@
 <script>
     import PollDetails from './PollDetails.component.svelte';
-   export let polls = [];
+    import pollStore from '../stores/PollStore.js';
+    import { onDestroy, onMount } from 'svelte';
+//    export let polls = [];
+
+//    Subscription can cause memory leaks
+//    const unsub = pollStore.subscribe( data  => {
+//        polls = data;
+//    })
+
+
+//    LifeCycle Hooks for SVELTE 
+// Shortway: $pollStore
+
+    // onMount(() => {
+    //     // Maybe getting data from a DB
+    //     console.log('Component Mounted! \u{1F971}');
+    // })
+
+    // onDestroy(() => {
+    //     console.log('COmponent Destroyed!');
+    //     unsub();
+    // })
 </script>
 
 
 
 <div class="poll-list">
-    {#each polls as poll(poll.id)}
-        <PollDetails poll={poll} on:pollVote />
+    {#each $pollStore as poll(poll.id)}
+        <PollDetails poll={poll} />
     {/each}
 </div>
 

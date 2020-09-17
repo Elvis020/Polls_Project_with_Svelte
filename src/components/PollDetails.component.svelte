@@ -1,8 +1,8 @@
 <script>
     import Card from '../shared/Card.component.svelte';
-    import {createEventDispatcher} from 'svelte';
+    import pollStore from '../stores/PollStore.js';
+    import Button from '../shared/Button.component.svelte';
 
-    const dispatch = createEventDispatcher();
     export let poll;
     //reactive values
     $: totalVotes = poll.votesA + poll.votesB;
@@ -14,12 +14,36 @@
 
     // A function to handle votes
     const handlePollVote = (option, id) => {
-        dispatch('pollVote', {option,id})
+        pollStore.update(currentPolls => {
+            // This copies the polls array
+            let copiedPolls = [...currentPolls]
+            let upVotedPoll = copiedPolls.find( (poll) => poll.id == id)
+    
+            if (option === 'a'){
+                upVotedPoll.votesA++
+            }
+            if (option === 'b'){
+                upVotedPoll.votesB++
+            }
+
+            return copiedPolls;
+    
+        });
+
+    }
+
+
+
+    // Function for Deleting a Poll
+    const deletePoll = (id) =>{
+        pollStore.update(currentPolls => {
+            return currentPolls.filter(poll => poll.id != id)
+        });
     }
 </script>
 
-<div class="poll">
-    <Card>
+<Card>
+    <div class="poll">
         <h3> {poll.question} </h3>
         <p>Total votes: {totalVotes} </p>
         <div class="answer" on:click={ ()=> handlePollVote('a', poll.id)}>
@@ -30,8 +54,11 @@
             <div class="percent percent-b" style="width: {percentB}%"></div>
             <span> {poll.answer_b} ({poll.votesB}) </span>
         </div>
-    </Card>
-</div>
+        <div class="delete">
+            <Button flat={true} on:click={() => deletePoll(poll.id) }>Delete</Button>
+        </div>
+    </div>
+</Card>
 
 
 
@@ -68,7 +95,7 @@
         height: 100%;
         position: absolute;
         box-sizing: border-box;
-    }
+    } 
 
     .percent-a{
         border-left: 4px solid #d91b42;
@@ -77,5 +104,9 @@
     .percent-b{
         border-left: 4px solid #45c496;
         background:rgba(69, 196, 150, 0.2);
+    }
+    .delete {
+        margin-top: 30px;
+        text-align: center;
     }
 </style>

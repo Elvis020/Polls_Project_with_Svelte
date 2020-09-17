@@ -5,7 +5,7 @@
 
 </script>
 
-<button class={type} class:flat={flat} class:inverse={inverse} >
+<button class={type} class:flat={flat} class:inverse={inverse} on:click >
     <!-- Slot lets the component accept input text -->
     <slot><!-- optional fallback --></slot>
 </button>
