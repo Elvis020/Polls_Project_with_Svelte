@@ -3,6 +3,21 @@
 	import Footer from './components/Footer.component.svelte';
 	import Tabs from './shared/Tabs.component.svelte';
 	import PollForm from './components/PollForm.component.svelte';
+	import PollList from './components/PollList.component.svelte';
+
+
+
+	// Dummy Poll
+	let polls = [
+		{
+			id: 1,
+			question: 'Python or Javascript?',
+			answer_a: 'Python',
+			answer_b: 'Javascript',
+			votesA: 9,
+			votesB: 15
+		},
+	];
 
 
 	// Tabs
@@ -11,6 +26,37 @@
 
 	const tabChange = (e) => {
 		activeItem = e.detail;
+	}
+
+
+	
+
+	const addNewPoll = (e) => {
+		const newPoll = e.detail;
+		// Updating the polls array 
+		polls = [newPoll, ...polls]
+		activeItem = 'Current Polls';
+		console.log(polls);
+	}
+
+
+	// Function from PollDetails component to App component to handle the votes
+	const handleVote = (e) =>{
+		const {id, option} = e.detail;
+
+		// This copies the polls array
+		let copiedPolls = [...polls]
+		let upVotedPoll = copiedPolls.find( (poll) => poll.id == id)
+
+		if (option === 'a'){
+			upVotedPoll.votesA++
+		}
+		if (option === 'b'){
+			upVotedPoll.votesB++
+		}
+
+
+		polls = copiedPolls
 	}
 	
 </script>
@@ -21,9 +67,9 @@
 <main>
 	<Tabs {activeItem} {items} on:changeTab={tabChange}  />
 	{#if activeItem === 'Current Polls'}
-		<p>Poll commponent goes here! &#x1F9B9;&#x200D;&#x2642;&#xFE0F;</p>
+		<PollList polls={polls} on:pollVote={handleVote} />
 	{:else if activeItem !== 'Current Polls'}
-		<PollForm />
+		<PollForm on:addPoll={addNewPoll} />
 	{/if}
 </main>
 
